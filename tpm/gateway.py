@@ -166,6 +166,9 @@ def make_handler(app: GatewayApp):
                 return self._send_json(200, app.models_list())
             if path == "/api/status":
                 return self._send_json(200, app.pool.status())
+            if path == "/api/radar":
+                from .radar import load_radar_state
+                return self._send_json(200, load_radar_state())
             if path in ("/dashboard", "/"):
                 try:
                     html = DASHBOARD_HTML.read_bytes()
