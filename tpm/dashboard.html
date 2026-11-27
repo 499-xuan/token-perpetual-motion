@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token 永动机 · 仪表盘</title>
+<style>
+  :root { --bg:#0d1117; --card:#161b22; --line:#30363d; --txt:#e6edf3; --dim:#8b949e;
+          --green:#3fb950; --yellow:#d29922; --red:#f85149; --blue:#58a6ff; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt);
+         font-family:-apple-system,"PingFang SC","Microsoft YaHei",Segoe UI,sans-serif; }
+  header { padding:20px 24px 8px; display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  h1 { font-size:22px; margin:0; }
+  .sub { color:var(--dim); font-size:13px; }
+  main { padding:12px 24px 32px; display:grid; gap:16px; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .card .num { font-size:28px; font-weight:700; }
+  .card .lbl { color:var(--dim); font-size:13px; margin-top:2px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  h2 { font-size:16px; margin:0 0 10px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--dim); font-weight:600; }
+  .badge { display:inline-block; padding:1px 8px; border-radius:20px; font-size:12px; border:1px solid var(--line); }
+  .serving { color:var(--green); border-color:var(--green); }
+  .observing { color:var(--yellow); border-color:var(--yellow); }
+  .quarantined { color:var(--red); border-color:var(--red); }
+  .bar { height:6px; background:#21262d; border-radius:3px; overflow:hidden; min-width:80px; }
+  .bar > div { height:100%; background:var(--blue); }
+  .dim { color:var(--dim); }
+  .rank { font-weight:700; color:var(--blue); }
+  .err { color:var(--red); font-size:12px; }
+  code { background:#21262d; padding:1px 5px; border-radius:4px; font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>⚙️ Token 永动机</h1>
+  <span class="sub">本地 LLM 网关 · 路由分组 / 健康状态 / 池子概览</span>
+  <span class="sub" id="meta"></span>
+</header>
+<main>
+  <div class="cards">
+    <div class="card"><div class="num" style="color:var(--green)" id="c-serving">–</div><div class="lbl">服役中</div></div>
+    <div class="card"><div class="num" style="color:var(--yellow)" id="c-observing">–</div><div class="lbl">观察区</div></div>
+    <div class="card"><div class="num" style="color:var(--red)" id="c-quarantined">–</div><div class="lbl">隔离区</div></div>
+    <div class="card"><div class="num" id="c-uptime">–</div><div class="lbl">网关运行 (秒)</div></div>
+  </div>
+  <section>
+    <h2>🧭 路由分组排名</h2>
+    <div id="groups"></div>
+  </section>
+  <section>
+    <h2>🩺 上游健康状态</h2>
+    <table>
+      <thead><tr><th>上游</th><th>状态</th><th>健康分</th><th>成功率</th><th>平均延迟</th><th>请求 (成功/总)</th><th>备注</th></tr></thead>
+      <tbody id="upstreams"></tbody>
+    </table>
+  </section>
+  <section>
+    <h2>📜 最近请求</h2>
+    <table>
+      <thead><tr><th>时间</th><th>上游</th><th>模型</th><th>分组</th><th>结果</th><th>延迟</th></tr></thead>
+      <tbody id="recent"></tbody>
+    </table>
+  </section>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const stateZh = {serving:"服役中", observing:"观察区", quarantined:"隔离区"};
+
+async function refresh() {
+  try {
+    const r = await fetch("/api/status");
+    const s = await r.json();
+    $("c-serving").textContent = s.counts.serving ?? 0;
+    $("c-observing").textContent = s.counts.observing ?? 0;
+    $("c-quarantined").textContent = s.counts.quarantined ?? 0;
+    $("c-uptime").textContent = Math.round(s.uptime_s);
+    $("meta").textContent = "默认分组: " + s.default_group + " · 每 5 秒自动刷新";
+
+    $("groups").innerHTML = Object.entries(s.groups).map(([name, g]) => `
+      <h3 style="margin:14px 0 6px;font-size:14px;">${esc(name)}
+        <span class="dim">(${esc(g.label)}) · 权重 能力 ${g.weights.capability} / 健康 ${g.weights.health} / 成本 ${g.weights.cost}</span></h3>
+      ${g.members.length ? `<table><thead><tr><th>#</th><th>上游</th><th>总分</th><th>能力</th><th>健康</th><th>成本</th><th>模型</th></tr></thead>
+      <tbody>${g.members.map((m, i) => `<tr>
+        <td class="rank">${i + 1}</td><td>${esc(m.name)}</td>
+        <td><div class="bar"><div style="width:${m.score}%"></div></div> ${m.score}</td>
+        <td>${m.capability}</td><td>${m.health}</td><td>${m.cost_tier}</td>
+        <td class="dim">${esc(m.models.join(", "))}</td></tr>`).join("")}</tbody></table>`
+      : '<p class="dim">暂无服役中的上游</p>'}`).join("");
+
+    $("upstreams").innerHTML = s.upstreams.map(u => `<tr>
+      <td>${esc(u.name)}<br><span class="dim">${esc(u.base_url)}</span></td>
+      <td><span class="badge ${u.state}">${stateZh[u.state] || u.state}</span></td>
+      <td>${u.health}</td><td>${(u.success_rate * 100).toFixed(0)}%</td>
+      <td>${u.avg_latency_ms == null ? "–" : u.avg_latency_ms + " ms"}</td>
+      <td>${u.requests_ok}/${u.requests_total}</td>
+      <td>${u.state === "quarantined" ? '<span class="err">' + esc(u.quarantine_reason) + "</span>"
+            : (u.last_error ? '<span class="err">' + esc(u.last_error) + "</span>" : "")}</td></tr>`).join("");
+
+    $("recent").innerHTML = (s.recent_requests || []).slice().reverse().map(r => `<tr>
+      <td class="dim">${new Date(r.ts * 1000).toLocaleTimeString()}</td>
+      <td>${esc(r.upstream)}</td><td>${esc(r.model)}</td><td>${esc(r.group)}</td>
+      <td>${r.ok ? '<span style="color:var(--green)">成功</span>' : '<span class="err">失败</span>'}</td>
+      <td>${r.latency_ms == null ? "–" : Math.round(r.latency_ms) + " ms"}</td></tr>`).join("")
+      || '<tr><td colspan="6" class="dim">暂无请求</td></tr>';
+  } catch (e) {
+    $("meta").textContent = "状态拉取失败: " + e;
+  }
+}
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>
