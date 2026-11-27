@@ -2,6 +2,7 @@
 
 用法:
   python3 -m tpm.butler sources                 雷达注册表 + 已配置来源
+  python3 -m tpm.butler scan                    雷达主动扫描: 逐个探测全部来源的 /models 端点
   python3 -m tpm.butler add --name x --base-url URL --api-key KEY --models a,b [--from groq]
   python3 -m tpm.butler test                    探一轮全部上游, 晋升/隔离, 结果写入 state.json
   python3 -m tpm.butler status                  池状态 + 各分组排名 (读 state.json)
@@ -41,6 +42,28 @@ def cmd_sources(_args):
     for u in cfg.get("upstreams", []):
         key_src = f"env:{u['api_key_env']}" if u.get("api_key_env") else ("已填Key" if u.get("api_key") else "无Key")
         print(f"- {u['name']:<14} {u['base_url']}  [{key_src}]  模型: {', '.join(u.get('models', []))}")
+
+
+def cmd_scan(args):
+    cfg = load_config()
+    timeout = float(getattr(args, "timeout", 8.0) or 8.0)
+    print(f"雷达扫描中: {len(radar.RADAR_SOURCES)} 个来源并发探测 (超时 {timeout:.0f}s/个)...")
+    report = radar.scan_radar(cfg, timeout=timeout)
+    for r in report["results"]:
+        extra = ""
+        if r["models_found_count"]:
+            extra = f"  发现模型 {r['models_found_count']} 个"
+            if r["registry_models_present"]:
+                extra += f", 登记模型命中: {', '.join(r['registry_models_present'])}"
+        if r["error"]:
+            extra += f"  ({r['error']})"
+        print(f"- {r['id']:<14} {r['status_zh']:<10} 延迟 {r['latency_ms']}ms"
+              f"{'  ✓已配置' if r['configured'] else ''}{extra}")
+    c = report["counts"]
+    print(f"\n汇总: 共 {report['total']} 个 · 开放可达 {c.get('open', 0)} · 已带Key验证 {c.get('verified', 0)}"
+          f" · 可达需Key {c.get('reachable', 0)} · 不可达 {c.get('unreachable', 0)}")
+    print("结果已写入 radar_state.json (仪表盘 /api/radar 可看)")
+    return 0
 
 
 def cmd_add(args):
@@ -132,6 +155,8 @@ def main(argv=None) -> int:
     p = argparse.ArgumentParser(prog="butler", description="Token 管家 — Token 永动机运维 CLI")
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("sources", help="雷达注册表 + 已配置来源")
+    ps = sub.add_parser("scan", help="雷达主动扫描全部来源")
+    ps.add_argument("--timeout", type=float, default=8.0, help="每个来源探测超时秒数")
     pa = sub.add_parser("add", help="添加/更新一个上游到 config.json")
     pa.add_argument("--name", required=True)
     pa.add_argument("--base-url", default="")
@@ -145,7 +170,7 @@ def main(argv=None) -> int:
     sub.add_parser("status", help="池状态与分组排名")
     sub.add_parser("stats", help="最近请求统计")
     args = p.parse_args(argv)
-    return {"sources": cmd_sources, "add": cmd_add, "test": cmd_test,
+    return {"sources": cmd_sources, "scan": cmd_scan, "add": cmd_add, "test": cmd_test,
             "status": cmd_status, "stats": cmd_stats}[args.cmd](args)
 
 
