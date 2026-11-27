@@ -125,7 +125,11 @@ curl http://127.0.0.1:13425/v1/chat/completions \
 ```bash
 python3 butler.py sources            # 雷达注册表 + 已配置来源
 python3 butler.py scan               # 雷达主动扫描: 探测全部 24 个来源并写入 radar_state.json
+python3 butler.py claim              # 领取清单: 还没领的 Key + 领取地址 (仪表盘雷达区也有「领 Key →」直达)
 python3 butler.py add --from groq --name my-groq --api-key-env GROQ_API_KEY
+# add 带 Key 时会自动验证 Key 并发现该账号的真实模型清单 (可省略 --models)
+# 说明: Key 必须用你自己的账号在各平台领取 (注册/验证只能本人完成),
+# 工具负责领取之后的全部自动化: 验证 → 发现模型 → 入池 → 健康巡检。
 python3 butler.py add --name my-api --base-url https://example.com/v1 \
                       --api-key sk-xxx --models model-1,model-2 \
                       --capability 70 --cost-tier 80
