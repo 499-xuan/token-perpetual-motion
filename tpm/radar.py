@@ -108,6 +108,146 @@ RADAR_SOURCES = [
         "capability": 80,
         "cost_tier": 100,
     },
+    {
+        "id": "cerebras",
+        "name": "Cerebras",
+        "signup_url": "https://cloud.cerebras.ai/",
+        "base_url": "https://api.cerebras.ai/v1",
+        "free_tier": "免费层额度大方, 推理速度极快 (晶圆级芯片), 按分钟/天限速",
+        "models": ["llama-3.3-70b", "qwen-3-32b"],
+        "capability": 74,
+        "cost_tier": 100,
+    },
+    {
+        "id": "sambanova",
+        "name": "SambaNova Cloud",
+        "signup_url": "https://cloud.sambanova.ai/apis",
+        "base_url": "https://api.sambanova.ai/v1",
+        "free_tier": "注册送免费额度, 70B 模型速度快",
+        "models": ["Meta-Llama-3.3-70B-Instruct", "DeepSeek-V3.1"],
+        "capability": 76,
+        "cost_tier": 95,
+    },
+    {
+        "id": "nvidia",
+        "name": "NVIDIA NIM (build.nvidia.com)",
+        "signup_url": "https://build.nvidia.com/explore/discover",
+        "base_url": "https://integrate.api.nvidia.com/v1",
+        "free_tier": "注册送 1000 次免费调用额度, 可再申请追加",
+        "models": ["meta/llama-3.3-70b-instruct", "deepseek-ai/deepseek-r1"],
+        "capability": 76,
+        "cost_tier": 95,
+    },
+    {
+        "id": "mistral",
+        "name": "Mistral AI",
+        "signup_url": "https://console.mistral.ai/api-keys",
+        "base_url": "https://api.mistral.ai/v1",
+        "free_tier": "La Plateforme 有免费实验层 (需绑手机验证), 按月限额",
+        "models": ["mistral-small-latest", "codestral-latest"],
+        "capability": 72,
+        "cost_tier": 90,
+    },
+    {
+        "id": "cohere",
+        "name": "Cohere",
+        "signup_url": "https://dashboard.cohere.com/api-keys",
+        "base_url": "https://api.cohere.ai/compatibility/v1",
+        "free_tier": "Trial Key 免费, 每月 1000 次调用 (不可商用)",
+        "models": ["command-r-08-2024", "command-r-plus-08-2024"],
+        "capability": 66,
+        "cost_tier": 90,
+    },
+    {
+        "id": "huggingface",
+        "name": "Hugging Face Inference",
+        "signup_url": "https://huggingface.co/settings/tokens",
+        "base_url": "https://router.huggingface.co/v1",
+        "free_tier": "免费账号每月送少量推理额度, 模型种类最全",
+        "models": ["meta-llama/Llama-3.3-70B-Instruct", "Qwen/Qwen2.5-72B-Instruct"],
+        "capability": 70,
+        "cost_tier": 95,
+    },
+    {
+        "id": "together",
+        "name": "Together AI",
+        "signup_url": "https://api.together.ai/settings/api-keys",
+        "base_url": "https://api.together.xyz/v1",
+        "free_tier": "新用户送试用额度, 部分模型有免费档",
+        "models": ["meta-llama/Llama-3.3-70B-Instruct-Turbo", "deepseek-ai/DeepSeek-V3"],
+        "capability": 74,
+        "cost_tier": 80,
+    },
+    {
+        "id": "fireworks",
+        "name": "Fireworks AI",
+        "signup_url": "https://fireworks.ai/account/api-keys",
+        "base_url": "https://api.fireworks.ai/inference/v1",
+        "free_tier": "新用户送试用额度",
+        "models": ["accounts/fireworks/models/llama-v3p3-70b-instruct", "accounts/fireworks/models/deepseek-v3"],
+        "capability": 74,
+        "cost_tier": 80,
+    },
+    {
+        "id": "qianfan",
+        "name": "百度千帆 (文心)",
+        "signup_url": "https://console.bce.baidu.com/qianfan/ais/console/apiKey",
+        "base_url": "https://qianfan.baidubce.com/v2",
+        "free_tier": "ERNIE-Speed / ERNIE-Lite 系列长期免费, 其他模型有试用额度",
+        "models": ["ernie-speed-8k", "ernie-lite-8k"],
+        "capability": 58,
+        "cost_tier": 100,
+    },
+    {
+        "id": "dashscope",
+        "name": "阿里云百炼 (通义千问)",
+        "signup_url": "https://bailian.console.aliyun.com/?apiKey=1#/api-key",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "free_tier": "新用户每个模型有免费额度 (如 100 万 tokens, 有效期 90 天)",
+        "models": ["qwen-turbo", "qwen-flash", "qwen-plus"],
+        "capability": 70,
+        "cost_tier": 95,
+    },
+    {
+        "id": "hunyuan",
+        "name": "腾讯混元",
+        "signup_url": "https://console.cloud.tencent.com/hunyuan/api-key",
+        "base_url": "https://api.hunyuan.cloud.tencent.com/v1",
+        "free_tier": "新用户 100 万 tokens 免费额度包; hunyuan-lite 免费",
+        "models": ["hunyuan-lite", "hunyuan-turbo"],
+        "capability": 60,
+        "cost_tier": 95,
+    },
+    {
+        "id": "spark",
+        "name": "讯飞星火",
+        "signup_url": "https://console.xfyun.cn/services/bm35",
+        "base_url": "https://spark-api-open.xf-yun.com/v1",
+        "free_tier": "Spark Lite 长期免费, 其他版本有免费试用包",
+        "models": ["lite", "generalv3.5"],
+        "capability": 55,
+        "cost_tier": 100,
+    },
+    {
+        "id": "minimax",
+        "name": "MiniMax",
+        "signup_url": "https://platform.minimaxi.com/user-center/basic-information/interface-key",
+        "base_url": "https://api.minimax.chat/v1",
+        "free_tier": "新用户有试用额度包",
+        "models": ["abab6.5s-chat", "MiniMax-Text-01"],
+        "capability": 68,
+        "cost_tier": 70,
+    },
+    {
+        "id": "stepfun",
+        "name": "阶跃星辰 StepFun",
+        "signup_url": "https://platform.stepfun.com/interface-key",
+        "base_url": "https://api.stepfun.com/v1",
+        "free_tier": "新用户送体验额度",
+        "models": ["step-1-flash", "step-2-16k"],
+        "capability": 68,
+        "cost_tier": 80,
+    },
 ]
 
 
@@ -116,3 +256,123 @@ def find_source(source_id: str) -> dict | None:
         if s["id"] == source_id:
             return dict(s)
     return None
+
+
+# ---------------------------------------------------------------------------
+# 主动探测: 不再只是静态清单。扫描会实际请求每个来源的 /models 端点:
+#   - 无 Key 探测: 200=开放可达, 401/403=服务活着但需要 Key, 其他/超时=不可达
+#   - 带 Key 探测 (config.json 里已配置的来源): 200 时解析出真实可用模型清单,
+#     并核对注册表里登记的模型是否真的存在。
+# 结果写入 radar_state.json, 仪表盘 /api/radar 读取展示。
+# ---------------------------------------------------------------------------
+import json
+import time
+import urllib.error
+import urllib.request
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+RADAR_STATE_PATH = Path(__file__).resolve().parent.parent / "radar_state.json"
+
+_STATUS_ZH = {
+    "open": "开放可达",
+    "verified": "已带Key验证",
+    "reachable": "可达·需Key",
+    "unreachable": "不可达",
+}
+
+
+class _NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *args):
+        raise RuntimeError("redirect refused")
+
+
+def probe_models_endpoint(base_url: str, api_key: str = "", timeout: float = 8.0) -> dict:
+    """探测一个 OpenAI 兼容端点的 /models。返回状态/延迟/模型清单。"""
+    url = base_url.rstrip("/") + "/models"
+    req = urllib.request.Request(url, method="GET")
+    req.add_header("User-Agent", "token-perpetual-motion/radar")
+    req.add_header("Accept", "application/json")
+    if api_key:
+        req.add_header("Authorization", f"Bearer {api_key}")
+    started = time.time()
+    try:
+        with urllib.request.build_opener(_NoRedirect()).open(req, timeout=timeout) as resp:
+            latency = (time.time() - started) * 1000
+            models = []
+            try:
+                data = json.loads(resp.read().decode("utf-8", "replace"))
+                models = [m.get("id", "") for m in data.get("data", []) if m.get("id")]
+            except (ValueError, AttributeError):
+                pass
+            return {"status": "verified" if api_key else "open", "http": resp.status,
+                    "latency_ms": round(latency), "models_found": models, "error": ""}
+    except urllib.error.HTTPError as e:
+        latency = (time.time() - started) * 1000
+        if e.code in (401, 403):
+            status = "unreachable" if api_key else "reachable"
+            error = f"HTTP {e.code} (Key 被拒绝)" if api_key else f"HTTP {e.code} (需要 Key)"
+            return {"status": status, "http": e.code, "latency_ms": round(latency),
+                    "models_found": [], "error": error}
+        if e.code in (404, 405):
+            # 服务本身活着, 只是 /models 路径/方法对不上 (如需在 base_url 里填账户 ID)
+            return {"status": "reachable", "http": e.code, "latency_ms": round(latency),
+                    "models_found": [], "error": f"HTTP {e.code} (服务可达, /models 路径需核对)"}
+        return {"status": "unreachable", "http": e.code, "latency_ms": round(latency),
+                "models_found": [], "error": f"HTTP {e.code}"}
+    except Exception as e:  # 超时 / DNS / 连接失败等
+        return {"status": "unreachable", "http": None,
+                "latency_ms": round((time.time() - started) * 1000),
+                "models_found": [], "error": f"{type(e).__name__}: {e}"[:120]}
+
+
+def scan_radar(config: dict | None = None, timeout: float = 8.0,
+               sources: list | None = None, state_path: Path | None = RADAR_STATE_PATH) -> dict:
+    """全量扫描: 注册表逐个无 Key 探测 + 已配置上游带 Key 探测。并发执行。"""
+    registry = sources if sources is not None else RADAR_SOURCES
+    configured = {}
+    if config:
+        for up in config.get("upstreams", []):
+            key = up.get("api_key") or ""
+            if not key and up.get("api_key_env"):
+                import os
+                key = os.environ.get(up["api_key_env"], "")
+            configured[up.get("name", "")] = {"base_url": up.get("base_url", ""), "api_key": key}
+
+    def scan_one(src: dict) -> dict:
+        entry = {"id": src["id"], "name": src["name"], "base_url": src["base_url"],
+                 "signup_url": src["signup_url"], "free_tier": src["free_tier"],
+                 "configured": src["id"] in configured}
+        conf = configured.get(src["id"])
+        if conf and conf["api_key"]:
+            probe = probe_models_endpoint(conf["base_url"] or src["base_url"],
+                                          api_key=conf["api_key"], timeout=timeout)
+            entry["probe_mode"] = "with_key"
+        else:
+            probe = probe_models_endpoint(src["base_url"], timeout=timeout)
+            entry["probe_mode"] = "no_key"
+        entry.update(probe)
+        entry["status_zh"] = _STATUS_ZH.get(entry["status"], entry["status"])
+        found = set(entry["models_found"])
+        entry["registry_models_present"] = [m for m in src.get("models", []) if m in found]
+        entry["models_found_count"] = len(found)
+        return entry
+
+    with ThreadPoolExecutor(max_workers=8) as ex:
+        results = list(ex.map(scan_one, registry))
+
+    counts = {}
+    for r in results:
+        counts[r["status"]] = counts.get(r["status"], 0) + 1
+    report = {"scanned_at": time.time(), "timeout_s": timeout,
+              "total": len(results), "counts": counts, "results": results}
+    if state_path is not None:
+        state_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    return report
+
+
+def load_radar_state() -> dict:
+    try:
+        return json.loads(RADAR_STATE_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {"scanned_at": None, "total": len(RADAR_SOURCES), "counts": {}, "results": []}
