@@ -24,7 +24,7 @@
 └──────────────────────────────────────────────────────────────┘
 ```
 
-- **雷达层** (`tpm/radar.py`): 登记各来源的注册地址、免费额度说明、base_url、推荐模型与经验评分。用 `butler sources` 查看。
+- **雷达层** (`tpm/radar.py`): 登记 24 个来源的注册地址、免费额度说明、base_url、推荐模型与经验评分。用 `butler sources` 查看清单, 用 `butler scan` **主动探测**: 并发请求每个来源的 `/models` 端点, 区分 开放可达 / 可达·需Key / 已带Key验证 / 不可达, 已配置的来源还会解析出真实可用模型并核对登记模型是否命中; 结果写入 `radar_state.json`, 仪表盘有「雷达扫描」专区 (数据来自 `/api/radar`)。
 - **观察与服役区** (`tpm/pool.py` + `tpm/health.py`): 后台每 30~60 秒 (可配) 对每个上游发一条极小的 chat 请求探活, 记录成功率与延迟; 通过进服役池, 连续失败 (默认 3 次) 进隔离区。
 - **本地网关** (`tpm/gateway.py`): 对外提供 `GET /v1/models`、`POST /v1/chat/completions` (含 SSE 流式透传)。健康分 = 成功率×70 + 延迟分×30, 实时计算。
 - **Token 管家** (`tpm/butler.py`): 日常运维 CLI, 见下方。
@@ -124,6 +124,7 @@ curl http://127.0.0.1:13425/v1/chat/completions \
 
 ```bash
 python3 butler.py sources            # 雷达注册表 + 已配置来源
+python3 butler.py scan               # 雷达主动扫描: 探测全部 24 个来源并写入 radar_state.json
 python3 butler.py add --from groq --name my-groq --api-key-env GROQ_API_KEY
 python3 butler.py add --name my-api --base-url https://example.com/v1 \
                       --api-key sk-xxx --models model-1,model-2 \
