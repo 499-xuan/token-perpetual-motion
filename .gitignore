@@ -4,6 +4,7 @@ config.json
 # 运行时状态
 state.json
 state.json.tmp
+radar_state.json
 
 # Python
 __pycache__/
