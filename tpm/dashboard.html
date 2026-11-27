@@ -116,7 +116,7 @@ async function refresh() {
         const color = {open:"var(--green)", verified:"var(--green)", reachable:"var(--yellow)", unreachable:"var(--red)"};
         $("radar").innerHTML = `<table><thead><tr><th>来源</th><th>状态</th><th>延迟</th><th>发现模型</th><th>免费额度</th></tr></thead>
           <tbody>${(rr.results || []).map(x => `<tr>
-            <td>${esc(x.name)}${x.configured ? ' <span class="badge serving">已配置</span>' : ""}<br><span class="dim">${esc(x.base_url)}</span></td>
+            <td>${esc(x.name)}${x.configured ? ' <span class="badge serving">已配置</span>' : ""}<br><span class="dim">${esc(x.base_url)}</span>${x.configured ? "" : '<br><a href="' + esc(x.signup_url) + '" target="_blank" rel="noopener" style="color:var(--blue)">领 Key →</a>'}</td>
             <td><span style="color:${color[x.status] || "inherit"}">${esc(x.status_zh || x.status)}</span>${x.error ? '<br><span class="err">' + esc(x.error) + "</span>" : ""}</td>
             <td>${x.latency_ms == null ? "–" : x.latency_ms + " ms"}</td>
             <td>${x.models_found_count ? x.models_found_count + " 个" + (x.registry_models_present && x.registry_models_present.length ? '<br><span class="dim">命中: ' + esc(x.registry_models_present.join(", ")) + "</span>" : "") : "–"}</td>
