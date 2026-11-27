@@ -67,6 +67,39 @@ class TestScan(unittest.TestCase):
         report = radar.scan_radar(config=None, timeout=2.0, sources=[src], state_path=None)
         self.assertEqual(report["results"][0]["status"], "unreachable")
 
+    def test_probe_with_key_is_verified(self):
+        probe = radar.probe_models_endpoint(f"http://127.0.0.1:{self.port}/v1",
+                                            api_key="sk-test", timeout=3.0)
+        self.assertEqual(probe["status"], "verified")
+        self.assertEqual(sorted(probe["models_found"]), ["m-alpha", "m-beta"])
+
+    def test_add_with_key_auto_discovers_models(self):
+        import tempfile
+        from pathlib import Path
+        from tpm import butler
+
+        class Args:
+            name = "fake-up"
+            base_url = f"http://127.0.0.1:{self.port}/v1"
+            api_key = "sk-test"
+            api_key_env = ""
+            models = ""
+            from_radar = ""
+            capability = 50
+            cost_tier = 50
+
+        with tempfile.TemporaryDirectory() as td:
+            cfg_path = Path(td) / "config.json"
+            old = butler.CONFIG_PATH
+            butler.CONFIG_PATH = cfg_path
+            try:
+                rc = butler.cmd_add(Args())
+            finally:
+                butler.CONFIG_PATH = old
+            self.assertEqual(rc, 0)
+            saved = json.loads(cfg_path.read_text(encoding="utf-8"))
+            self.assertEqual(saved["upstreams"][0]["models"], ["m-alpha", "m-beta"])
+
 
 if __name__ == "__main__":
     unittest.main()
